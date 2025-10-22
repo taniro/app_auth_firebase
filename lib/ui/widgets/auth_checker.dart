@@ -1,3 +1,4 @@
+import 'package:app_auth_firebase/ui/pages/chat_page.dart';
 import 'package:app_auth_firebase/ui/pages/home_page.dart';
 import 'package:app_auth_firebase/ui/pages/login_or_register_page.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class AuthChecker extends StatelessWidget {
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) =>
-        snapshot.hasData ? const HomePage() : const LoginOrRegisterPage(),
+        snapshot.hasData ? const ChatPage() : const LoginOrRegisterPage(),
       ),
     );
   }
