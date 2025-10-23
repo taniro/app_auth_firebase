@@ -27,7 +27,11 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendMessage() async {
     if (_messageController.value.text.isNotEmpty) {
-      await chatService.sendMessage(_messageController.value.text);
+      await chatService.sendMessage(
+        _messageController.value.text,
+        authService.getCurrentUserId(),
+        authService.getCurrentUserEmail(),
+      );
       _messageController.clear();
     }
   }
@@ -53,16 +57,17 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [
           IconButton(
-              onPressed: signOut,
-              icon: Icon(
-                Icons.logout,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ))
+            onPressed: signOut,
+            icon: Icon(
+              Icons.logout,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
         ],
       ),
       body: Column(
         children: [
-          SizedBox(height: 10,),
+          SizedBox(height: 10),
           Expanded(
             child: StreamBuilder(
               stream: chatService.getMessages(),
@@ -76,10 +81,12 @@ class _ChatPageState extends State<ChatPage> {
                 }
                 return ListView(
                   children: snapshot.data!.docs
-                      .map((document) => MessageItem(
-                    document: document,
-                    currentUserId: authService.getCurrentUser(),
-                  ))
+                      .map(
+                        (document) => MessageItem(
+                          document: document,
+                          currentUserId: authService.getCurrentUserId(),
+                        ),
+                      )
                       .toList(),
                 );
               },
@@ -98,16 +105,17 @@ class _ChatPageState extends State<ChatPage> {
                 child: Container(
                   color: Theme.of(context).colorScheme.primary,
                   child: IconButton(
-                      onPressed: sendMessage,
-                      icon: Icon(
-                        Icons.arrow_upward,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      )),
+                    onPressed: sendMessage,
+                    icon: Icon(
+                      Icons.arrow_upward,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
                 ),
-              )
+              ),
             ],
           ),
-          const SizedBox(height: 10,)
+          const SizedBox(height: 10),
         ],
       ),
     );

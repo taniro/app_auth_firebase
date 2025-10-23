@@ -1,15 +1,12 @@
 import 'package:app_auth_firebase/model/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 
 class StoreService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Future<void> sendMessage(String message) async {
-    final String senderId = _firebaseAuth.currentUser!.uid;
-    final String senderEmail = _firebaseAuth.currentUser!.email.toString();
+  Future<void> sendMessage(String message, String senderId, String senderEmail) async {
+
     final Timestamp timestamp = Timestamp.now();
 
     Message newMessage = Message(

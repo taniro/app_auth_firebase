@@ -37,8 +37,8 @@ class AuthService{
     return await _firebaseAuth.signOut();
   }
 
-  String? getCurrentUserEmail(){
-    return _firebaseAuth.currentUser!.email;
+  String getCurrentUserEmail(){
+    return _firebaseAuth.currentUser?.email ?? "email not found";
   }
 
   Future<void> signInAnonymously() async {
@@ -49,9 +49,14 @@ class AuthService{
     }
   }
 
-  String getCurrentUser() {
+  String getCurrentUserId() {
     return _firebaseAuth.currentUser!.uid;
   }
+
+  Stream<User?> getAuthStateChanges(){
+    return _firebaseAuth.authStateChanges();
+  }
+
 
 }
 
