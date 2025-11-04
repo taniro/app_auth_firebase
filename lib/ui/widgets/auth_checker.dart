@@ -1,4 +1,4 @@
-import 'package:app_auth_firebase/services/auth_service.dart';
+import 'package:app_auth_firebase/services/firebase/auth_service.dart';
 import 'package:app_auth_firebase/ui/pages/chat_page.dart';
 import 'package:app_auth_firebase/ui/pages/home_page.dart';
 import 'package:app_auth_firebase/ui/pages/login_or_register_page.dart';

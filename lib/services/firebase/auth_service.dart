@@ -57,6 +57,10 @@ class AuthService{
     return _firebaseAuth.authStateChanges();
   }
 
+  String getCurrentUser() {
+    return _firebaseAuth.currentUser!.uid;
+  }
+
 
 }
 

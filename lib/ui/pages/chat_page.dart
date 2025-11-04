@@ -1,10 +1,11 @@
-import 'package:app_auth_firebase/services/auth_service.dart';
-import 'package:app_auth_firebase/services/store_service.dart';
-import 'package:app_auth_firebase/ui/widgets/message_item.dart';
+import 'package:app_auth_firebase/services/firebase/auth_service.dart';
+import 'package:app_auth_firebase/services/firebase/firestore_database_service.dart';
+import 'package:app_auth_firebase/ui/pages/take_picture_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/custom_text_form_field.dart';
+import '../widgets/message_item.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -15,23 +16,19 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final _messageController = TextEditingController();
-  late final StoreService chatService;
+  late final FirestoreDatabaseService chatService;
   late final AuthService authService;
 
   @override
   void initState() {
     super.initState();
-    chatService = Provider.of<StoreService>(context, listen: false);
+    chatService = Provider.of<FirestoreDatabaseService>(context, listen: false);
     authService = Provider.of<AuthService>(context, listen: false);
   }
 
   void sendMessage() async {
     if (_messageController.value.text.isNotEmpty) {
-      await chatService.sendMessage(
-        _messageController.value.text,
-        authService.getCurrentUserId(),
-        authService.getCurrentUserEmail(),
-      );
+      await chatService.sendMessage(_messageController.value.text);
       _messageController.clear();
     }
   }
@@ -57,17 +54,16 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [
           IconButton(
-            onPressed: signOut,
-            icon: Icon(
-              Icons.logout,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-          ),
+              onPressed: signOut,
+              icon: Icon(
+                Icons.logout,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ))
         ],
       ),
       body: Column(
         children: [
-          SizedBox(height: 10),
+          SizedBox(height: 10,),
           Expanded(
             child: StreamBuilder(
               stream: chatService.getMessages(),
@@ -81,12 +77,10 @@ class _ChatPageState extends State<ChatPage> {
                 }
                 return ListView(
                   children: snapshot.data!.docs
-                      .map(
-                        (document) => MessageItem(
-                          document: document,
-                          currentUserId: authService.getCurrentUserId(),
-                        ),
-                      )
+                      .map((document) => MessageItem(
+                    document: document,
+                    currentUserId: authService.getCurrentUser(),
+                  ))
                       .toList(),
                 );
               },
@@ -101,21 +95,39 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(2.0),
                 child: Container(
                   color: Theme.of(context).colorScheme.primary,
                   child: IconButton(
-                    onPressed: sendMessage,
-                    icon: Icon(
-                      Icons.arrow_upward,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
+                      onPressed: sendMessage,
+                      icon: Icon(
+                        Icons.arrow_upward,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      )),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  color: Theme.of(context).colorScheme.primary,
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TakePicturePage(),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.camera_alt,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      )),
+                ),
+              )
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 10,)
         ],
       ),
     );
